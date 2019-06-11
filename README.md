@@ -4,7 +4,7 @@
 
 Passport strategy for the new Sign in with Apple feature!
 
-<b>This library is still under construction!</b>
+<b>This library is still under construction!</b><br />
 <b>Check out the original apple-auth library that is fully working!</b>
 
 <a href="https://github.com/ananay/apple-auth">https://github.com/ananay/apple-auth</a><br />
