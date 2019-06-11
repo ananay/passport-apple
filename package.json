@@ -29,5 +29,8 @@
   "bugs": {
     "url": "https://github.com/ananay/passport-apple/issues"
   },
-  "homepage": "https://github.com/ananay/passport-apple#readme"
+  "homepage": "https://github.com/ananay/passport-apple#readme",
+  "dependencies": {
+    "passport-oauth2": "^1.5.0"
+  }
 }
