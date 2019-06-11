@@ -1,0 +1,33 @@
+{
+  "name": "passport-apple",
+  "version": "0.0.1",
+  "description": "Passport strategy for Sign in with Apple",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ananay/passport-apple.git"
+  },
+  "keywords": [
+    "apple",
+    "auth",
+    "sign",
+    "in",
+    "with",
+    "passportjs",
+    "passport",
+    "node",
+    "nodejs",
+    "strategy",
+    "authentication",
+    "identity"
+  ],
+  "author": "Ananay Arora <i@ananayarora.com> (https://ananayarora.com)",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/ananay/passport-apple/issues"
+  },
+  "homepage": "https://github.com/ananay/passport-apple#readme"
+}
