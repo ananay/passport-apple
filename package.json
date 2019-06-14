@@ -1,8 +1,8 @@
 {
   "name": "passport-apple",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "Passport strategy for Sign in with Apple",
-  "main": "index.js",
+  "main": "src/strategy.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -31,6 +31,7 @@
   },
   "homepage": "https://github.com/ananay/passport-apple#readme",
   "dependencies": {
-    "passport-oauth2": "^1.5.0"
+    "passport-oauth2": "^1.5.0",
+    "jsonwebtoken": "^8.5.1"
   }
 }
