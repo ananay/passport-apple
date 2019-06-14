@@ -1,6 +1,11 @@
 #  Sign in with Apple for Passport.js
 
 <a href="https://twitter.com/intent/follow?screen_name=ananayarora"><img src="https://img.shields.io/twitter/follow/ananayarora.svg?label=Follow%20@ananayarora" alt="Follow @ananayarora"></img></a>
+<a href="https://npmjs.com/package/passport-apple">
+  <img src="https://img.shields.io/npm/dt/passport-apple.svg"></img>
+  <img src="https://img.shields.io/npm/v/passport-apple.svg"></img>
+</a>
+</p>
 
 Passport strategy for the new Sign in with Apple feature!
 
