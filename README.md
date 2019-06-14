@@ -14,6 +14,9 @@ Steps for that are given here:
 https://github.com/ananay/apple-auth/blob/master/SETUP.md
 
 ## Usage
+
+Initialize the strategy as follows:
+
 ```
 const AppleStrategy = require('passport-apple');
 passport.use(new AppleStrategy({
@@ -26,6 +29,27 @@ passport.use(new AppleStrategy({
     // Here, check if the idToken exists in your database!
     cb(null, idToken);
 }));
+```
+Add the login route:
+```app.get("/login", passport.authenticate('apple'));```
+
+Finally, add the callback route and handle the response:
+```
+app.get("/auth", function(req, res, next) {
+    passport.authenticate('apple', function(err, user, info) {
+        if (err) {
+            if (err == "AuthorizationError") {
+                res.send("Oops! Looks like you didn't allow the app to proceed. Please sign in again! <br /> \
+                <a href=\"/login\">Sign in with Apple</a>");
+            } else if (err == "TokenError") {
+                res.send("Oops! Couldn't get a valid token from Apple's servers! <br /> \
+                <a href=\"/login\">Sign in with Apple</a>");
+            }
+        } else {
+            res.send("Unique user ID: - " + user);
+        }
+    })(req, res, next);
+});
 ```
 
 ## Other Sign in with Apple repos
