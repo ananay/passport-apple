@@ -13,6 +13,14 @@ Next, you need to configure your Apple Developer Account with Sign in with Apple
 Steps for that are given here:
 https://github.com/ananay/apple-auth/blob/master/SETUP.md
 
+
+## Example
+
+**Live on https://passport-apple.ananay.dev**
+
+Example repo: https://github.com/ananay/passport-apple-example
+
+
 ## Usage
 
 Initialize the strategy as follows:
@@ -51,13 +59,6 @@ app.get("/auth", function(req, res, next) {
     })(req, res, next);
 });
 ```
-
-## Example
-
-**Live on https://passport-apple.ananay.dev**
-
-Example repo: https://github.com/ananay/passport-apple-example
-
 
 ## Other Sign in with Apple repos
 
