@@ -91,8 +91,7 @@ function Strategy(options, verify) {
                 }
             )
         }).catch((error) => {
-            // Log to the console if the token generation fails.
-            console.log(error);
+            callback(error);
         });
     }
 }
