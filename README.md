@@ -35,7 +35,7 @@ const AppleStrategy = require('passport-apple');
 passport.use(new AppleStrategy({
     clientID: "",
     teamID: "",
-    redirect_uri: "",
+    callbackURL: "",
     keyID: "",
     privateKeyLocation: ""
 }, function(accessToken, refreshToken, idToken, profile, cb) {
