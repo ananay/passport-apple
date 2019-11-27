@@ -16,11 +16,13 @@ class AppleClientSecret {
      * @param {string} config.team_id 
      * @param {string} config.redirect_uri 
      * @param {string} config.key_id 
-     * @param {*} privateKeyLocation 
+     * @param {string} privateKeyLocation 
+     * @param {string} privateKeyString
      */
-    constructor(config, privateKeyLocation) {
+    constructor(config, privateKeyLocation, privateKeyString) {
         this._config = config;
         this._privateKeyLocation = privateKeyLocation;
+        this._privateKeyString = privateKeyString;
         this.generate = this.generate.bind(this);
         this._generateToken = this._generateToken.bind(this);
     }
@@ -66,23 +68,26 @@ class AppleClientSecret {
     generate() {
         return new Promise (
             (resolve, reject) => {
-                fs.readFile(this._privateKeyLocation, (err, privateKey) => {
-                    if (err) {
-                        reject("AppleAuth Error - Couldn't read your Private Key file: " + err);
-                    }
-                    let exp = Math.floor(Date.now() / 1000) + ( 86400 * 180 ); // Make it expire within 6 months
-                    this._generateToken(
-                        this._config.client_id, 
-                        this._config.team_id, 
-                        privateKey,
-                        exp, 
-                        this._config.key_id
-                    ).then((token) => {
-                        resolve(token);
-                    }).catch((err) => {
-                        reject(err);
-                    });
+                let privateKey;
+                try {
+                    privateKey = this._privateKeyLocation ? fs.readFileSync(this._privateKeyLocation) : this._privateKeyString;
+                } catch (err) {
+                    return reject("AppleAuth Error - Couldn't read your Private Key file: " + err);
+                }
+
+                let exp = Math.floor(Date.now() / 1000) + ( 86400 * 180 ); // Make it expire within 6 months
+                this._generateToken(
+                    this._config.client_id, 
+                    this._config.team_id, 
+                    privateKey,
+                    exp, 
+                    this._config.key_id
+                ).then((token) => {
+                    resolve(token);
+                }).catch((err) => {
+                    reject(err);
                 });
+            
             }
         );
     }
