@@ -63,7 +63,7 @@ function Strategy(options, verify) {
         // Generate the client_secret using the library
         _tokenGenerator.generate().then((client_secret) => {
             params = params || {};
-            const codeParam = params.grant_type === 'refresh_token' ? 'refresh_token' : 'code';
+            const codeParam = params.grant_type === 'refresh_token' ? 'refresh_token' : 'code%20id_token';
             params[codeParam] = code;
             params['client_id'] = this._clientId;
             params['client_secret'] = client_secret;
@@ -72,24 +72,25 @@ function Strategy(options, verify) {
             const post_headers = {
                 'Content-Type': 'application/x-www-form-urlencoded'
             };
-            this._request(
-                'POST',
-                this._getAccessTokenUrl(),
-                post_headers,
-                post_data,
-                null,
-                function(error, data, response) {
-                    if (error) {
-                        callback(error);
-                    } else {
-                        let results = JSON.parse(data);
-                        let access_token = results.access_token;
-                        let refresh_token = results.refresh_token;
-                        let id_token = jwt.decode(results.id_token).sub;
-                        callback(null, access_token, refresh_token, id_token, results);
-                    }
-                }
-            )
+            console.log("LINK: " + this._getAccessTokenUrl());
+            // this._request(
+            //     'POST',
+            //     this._getAccessTokenUrl(),
+            //     post_headers,
+            //     post_data,
+            //     null,
+            //     function(error, data, response) {
+            //         if (error) {
+            //             callback(error);
+            //         } else {
+            //             let results = JSON.parse(data);
+            //             let access_token = results.access_token;
+            //             let refresh_token = results.refresh_token;
+            //             let id_token = jwt.decode(results.id_token).sub;
+            //             callback(null, access_token, refresh_token, id_token, results);
+            //         }
+            //     }
+            // )
         }).catch((error) => {
             callback(error);
         });
