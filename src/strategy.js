@@ -12,9 +12,9 @@ const OAuth2Strategy = require('passport-oauth2'),
 
 /**
  * Passport Strategy Constructor
- * 
+ *
  * Example:
- * 
+ *
  *   passport.use(new AppleStrategy({
  *      clientID: "",
  *      teamID: "",
@@ -25,7 +25,7 @@ const OAuth2Strategy = require('passport-oauth2'),
  *       // Here, check if the idToken exists in your database!
  *       cb(null, idToken);
  *   }));
- *  
+ *
  * @param {object} options - Configuration options
  * @param {string} options.clientID – Client ID (also known as the Services ID
  *  in Apple's Developer Portal). Example: com.ananayarora.app
@@ -85,7 +85,7 @@ function Strategy(options, verify) {
                         let results = JSON.parse(data);
                         let access_token = results.access_token;
                         let refresh_token = results.refresh_token;
-                        let id_token = jwt.decode(results.id_token).sub;
+                        let id_token = jwt.decode(results.id_token);
                         callback(null, access_token, refresh_token, id_token, results);
                     }
                 }
@@ -106,6 +106,7 @@ util.inherits(Strategy, OAuth2Strategy);
  * @access protected
  */
 Strategy.prototype.authenticate = function(req, options) {
+    //options.response_type = "code id_token";
     OAuth2Strategy.prototype.authenticate.call(this, req, options);
 };
 
@@ -117,6 +118,9 @@ Strategy.prototype.authenticate = function(req, options) {
  */
 Strategy.prototype.authorizationParams = function (options) {
     options.state = crypto.randomBytes(5).toString('hex');
+    options.response_type = "code id_token";
+    options.scope = "name email";
+    options.response_mode = "form_post";
     return options;
 }
 
