@@ -86,8 +86,7 @@ function Strategy(options, verify) {
                         let results = JSON.parse(data);
                         let access_token = results.access_token;
                         let refresh_token = results.refresh_token;
-                        let id_token = jwt.decode(results.id_token);
-                        callback(null, access_token, refresh_token, id_token, results);
+                        callback(null, access_token, refresh_token, results);
                     }
                 }
             )
