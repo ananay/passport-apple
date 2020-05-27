@@ -44,6 +44,7 @@ function Strategy(options, verify) {
     options = options || {};
     options.authorizationURL = options.authorizationURL || 'https://appleid.apple.com/auth/authorize';
     options.tokenURL = options.tokenURL || 'https://appleid.apple.com/auth/token';
+    options.passReqToCallback = options.passReqToCallback === undefined ? true : options.passReqToCallback
 
     // Make the OAuth call
     OAuth2Strategy.call(this, options, verify);
@@ -105,10 +106,14 @@ util.inherits(Strategy, OAuth2Strategy);
  * @param {object} options
  * @access protected
  */
-Strategy.prototype.authenticate = function(req, options) {
-    //options.response_type = "code id_token";
+Strategy.prototype.authenticate = function (req, options) {
+    // Workaround instead of reimplementing authenticate function
+    req.query = { ...req.query, ...req.body };
+    if(req.body && req.body.user){
+      req.appleProfile = JSON.parse(req.body.user)
+    }
     OAuth2Strategy.prototype.authenticate.call(this, req, options);
-};
+  };
 
 /**
  * Modify the authorization params. Currently adds
