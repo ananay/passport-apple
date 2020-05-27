@@ -20,9 +20,13 @@ const OAuth2Strategy = require('passport-oauth2'),
  *      teamID: "",
  *      callbackURL: "",
  *      keyID: "",
- *      privateKeyLocation: ""
- *   }, function(accessToken, refreshToken, idToken, profile, cb) {
- *       // Here, check if the idToken exists in your database!
+ *      privateKeyLocation: "",
+ *      passReqToCallback: true
+ *   }, function(req, accessToken, refreshToken, decodedIdToken, __ , cb) {
+ *       // Here, check if the decodedIdToken.sub exists in your database!
+ *       // __ parameter is REQUIRED for the sake of passport implementation
+ *       // it should be profile in the future but apple hasn't implemented passing data 
+ *       // in access token yet https://developer.apple.com/documentation/sign_in_with_apple/tokenresponse
  *       cb(null, idToken);
  *   }));
  *
@@ -36,6 +40,8 @@ const OAuth2Strategy = require('passport-oauth2'),
  * @param {string} options.callbackURL – The identifier for the private key on the Apple
  *  Developer Account page
  * @param {string} options.privateKeyLocation - Location to the private key
+ * 
+ * @param {boolean} options.passReqToCallback - Determine if the req will be passed to passport cb function
  * @param {function} verify
  * @access public
  */
@@ -44,6 +50,7 @@ function Strategy(options, verify) {
     options = options || {};
     options.authorizationURL = options.authorizationURL || 'https://appleid.apple.com/auth/authorize';
     options.tokenURL = options.tokenURL || 'https://appleid.apple.com/auth/token';
+    options.passReqToCallback = options.passReqToCallback === undefined ? true : options.passReqToCallback
 
     // Make the OAuth call
     OAuth2Strategy.call(this, options, verify);
@@ -82,11 +89,11 @@ function Strategy(options, verify) {
                     if (error) {
                         callback(error);
                     } else {
-                        let results = JSON.parse(data);
-                        let access_token = results.access_token;
-                        let refresh_token = results.refresh_token;
-                        let id_token = jwt.decode(results.id_token);
-                        callback(null, access_token, refresh_token, id_token, results);
+                        const results = JSON.parse(data);
+                        const access_token = results.access_token;
+                        const refresh_token = results.refresh_token;
+                        const decodedIdToken = jwt.decode(results.id_token)
+                        callback(null, access_token, refresh_token, decodedIdToken);
                     }
                 }
             )
@@ -105,10 +112,14 @@ util.inherits(Strategy, OAuth2Strategy);
  * @param {object} options
  * @access protected
  */
-Strategy.prototype.authenticate = function(req, options) {
-    //options.response_type = "code id_token";
+Strategy.prototype.authenticate = function (req, options) {
+    // Workaround instead of reimplementing authenticate function
+    req.query = { ...req.query, ...req.body };
+    if(req.body && req.body.user){
+      req.appleProfile = JSON.parse(req.body.user)
+    }
     OAuth2Strategy.prototype.authenticate.call(this, req, options);
-};
+  };
 
 /**
  * Modify the authorization params. Currently adds
