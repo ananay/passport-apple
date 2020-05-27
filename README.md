@@ -9,6 +9,12 @@
 
 Passport strategy for the new Sign in with Apple feature, now with fetching profile information ✅!
 
+## Example
+
+**Live on https://passport-apple.ananay.dev**
+
+**Example repo: https://github.com/ananay/passport-apple-example**
+
 ## Installation
 Install the package via npm / yarn:
 ``` npm install --save passport-apple ```
@@ -17,14 +23,6 @@ Next, you need to configure your Apple Developer Account with Sign in with Apple
 
 Steps for that are given here:
 https://github.com/ananay/apple-auth/blob/master/SETUP.md
-
-
-## Example
-
-**Live on https://passport-apple.ananay.dev**
-
-Example repo: https://github.com/ananay/passport-apple-example
-
 
 ## Usage
 
