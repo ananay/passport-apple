@@ -9,6 +9,8 @@
 
 Passport strategy for the new Sign in with Apple feature!
 
+## Still under work! Please using my other repo - [Apple Auth](https://github.com/ananay/apple-auth)
+
 ## Installation
 Install the package via npm / yarn:
 ``` npm install --save passport-apple ```
