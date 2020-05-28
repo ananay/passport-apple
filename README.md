@@ -7,7 +7,13 @@
 </a>
 </p>
 
-Passport strategy for the new Sign in with Apple feature!
+Passport strategy for the new Sign in with Apple feature, now with fetching profile information ✅!
+
+## Example
+
+**Live on https://passport-apple.ananay.dev**
+
+**Example repo: https://github.com/ananay/passport-apple-example**
 
 ## Installation
 Install the package via npm / yarn:
@@ -18,36 +24,35 @@ Next, you need to configure your Apple Developer Account with Sign in with Apple
 Steps for that are given here:
 https://github.com/ananay/apple-auth/blob/master/SETUP.md
 
-
-## Example
-
-**Live on https://passport-apple.ananay.dev**
-
-Example repo: https://github.com/ananay/passport-apple-example
-
-
 ## Usage
 
 Initialize the strategy as follows:
 
-```
+```js
 const AppleStrategy = require('passport-apple');
 passport.use(new AppleStrategy({
     clientID: "",
     teamID: "",
     callbackURL: "",
     keyID: "",
-    privateKeyLocation: ""
-}, function(accessToken, refreshToken, idToken, profile, cb) {
-    // Here, check if the idToken exists in your database!
-    cb(null, idToken);
+    privateKeyLocation: "",
+    passReqToCallback: true
+}, function(req, accessToken, refreshToken, decodedIdToken, profile, cb) {
+    // Here, check if the decodedIdToken.sub exists in your database!
+    // decodedIdToken should contains email too if user authorized it but will not contain the name
+    // `profile` parameter is REQUIRED for the sake of passport implementation
+    // it should be profile in the future but apple hasn't implemented passing data
+    // in access token yet https://developer.apple.com/documentation/sign_in_with_apple/tokenresponse
+    cb(null, decodedIdToken);
 }));
 ```
 Add the login route:
-```app.get("/login", passport.authenticate('apple'));```
+```js
+app.get("/login", passport.authenticate('apple'));
+```
 
 Finally, add the callback route and handle the response:
-```
+```js
 app.get("/auth", function(req, res, next) {
     passport.authenticate('apple', function(err, user, info) {
         if (err) {
@@ -59,7 +64,7 @@ app.get("/auth", function(req, res, next) {
                 <a href=\"/login\">Sign in with Apple</a>");
             }
         } else {
-            res.send("Unique user ID: - " + user);
+            res.json(user);
         }
     })(req, res, next);
 });
@@ -67,13 +72,21 @@ app.get("/auth", function(req, res, next) {
 
 ## Other Sign in with Apple repos
 
-Check out my other sign in with Apple Repos here. More coming soon!
+Check out my other sign in with Apple Repos here.
 
 ```apple-auth```:
 
 <a href="https://github.com/ananay/apple-auth">https://github.com/ananay/apple-auth</a><br />
 <a href="https://npmjs.com/package/apple-auth">https://npmjs.com/package/apple-auth</a>
 
+
+## FAQ
+
+#### What's the difference between `apple-auth` and `passport-apple`?
+`apple-auth` is a standalone library for Sign in with Apple. It does not require you to use Passport.js where as passport-apple is used with Passport.js.
+
+#### How is this module different from [nicokaiser/passport-apple](https://github.com/nicokaiser/passport-apple)?
+`@nicokaiser/passport-apple` is a fork of `passport-apple` that was made when `passport-apple` couldn't support fetching profile information. `passport-apple` now **supports** fetching profile information as well by using a simpler workaround (shoutout to [@MotazAbuElnasr](https://github.com/MotazAbuElnasr) for this!) instead of rewriting all of `passport-oauth2`.
 
 ## Questions / Contributing
 
