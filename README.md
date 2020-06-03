@@ -85,6 +85,9 @@ Check out my other sign in with Apple Repos here.
 #### What's the difference between `apple-auth` and `passport-apple`?
 `apple-auth` is a standalone library for Sign in with Apple. It does not require you to use Passport.js where as passport-apple is used with Passport.js.
 
+#### ⚠️ Legal Disclaimer
+This repository is NOT developed, endorsed by Apple Inc. or even related at all to Apple Inc. This library was implemented solely by the community's hardwork, and based on information that is public on Apple Developer's website. The library merely acts as a helper tool for anyone trying to implement Apple's Sign in with Apple.
+
 #### How is this module different from [nicokaiser/passport-apple](https://github.com/nicokaiser/passport-apple)?
 `@nicokaiser/passport-apple` is a fork of `passport-apple` that was made when `passport-apple` couldn't support fetching profile information. `passport-apple` now **supports** fetching profile information as well by using a simpler workaround (shoutout to [@MotazAbuElnasr](https://github.com/MotazAbuElnasr) for this!) instead of rewriting all of `passport-oauth2`.
 
