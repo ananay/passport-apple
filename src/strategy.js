@@ -128,7 +128,7 @@ Strategy.prototype.authenticate = function (req, options) {
  * @access protected
  */
 Strategy.prototype.authorizationParams = function (options) {
-    options.state = crypto.randomBytes(5).toString('hex');
+    options.state = options.state || crypto.randomBytes(5).toString('hex');
     options.response_type = "code id_token";
     options.scope = "name email";
     options.response_mode = "form_post";
