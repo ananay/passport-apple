@@ -40,7 +40,7 @@ const OAuth2Strategy = require('passport-oauth2'),
  * @param {string} options.callbackURL – The identifier for the private key on the Apple
  *  Developer Account page
  * @param {string} options.privateKeyLocation - Location to the private key
- * 
+ * @param {string} options.privateKeyString - Private key string
  * @param {boolean} options.passReqToCallback - Determine if the req will be passed to passport cb function
  * @param {function} verify
  * @access public
@@ -61,7 +61,7 @@ function Strategy(options, verify) {
         "client_id": options.clientID,
         "team_id": options.teamID,
         "key_id": options.keyID
-    }, options.privateKeyLocation);
+    }, options.privateKeyLocation, options.privateKeyString);
 
     // Get the OAuth Access Token from Apple's server
     // using the grant code / refresh token.
