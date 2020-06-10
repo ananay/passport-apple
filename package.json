@@ -1,6 +1,6 @@
 {
   "name": "passport-apple",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Passport strategy for Sign in with Apple",
   "main": "src/strategy.js",
   "scripts": {
