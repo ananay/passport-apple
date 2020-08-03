@@ -19,6 +19,14 @@ Passport strategy for the new Sign in with Apple feature, now with fetching prof
 Install the package via npm / yarn:
 ``` npm install --save passport-apple ```
 
+You will also need to install & configure `body-parser` if using Express:
+``` npm install --save body-parser ```
+
+```js
+const bodyParser = require("body-parser");
+app.use(bodyParser.urlencoded({ extended: true }));
+```
+
 Next, you need to configure your Apple Developer Account with Sign in with Apple.
 
 Steps for that are given here:
@@ -53,7 +61,7 @@ app.get("/login", passport.authenticate('apple'));
 
 Finally, add the callback route and handle the response:
 ```js
-app.get("/auth", function(req, res, next) {
+app.post("/auth", function(req, res, next) {
     passport.authenticate('apple', function(err, user, info) {
         if (err) {
             if (err == "AuthorizationError") {
