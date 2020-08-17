@@ -9,6 +9,8 @@
 
 Passport strategy for the new Sign in with Apple feature, now with fetching profile information ✅!
 
+⚠️ Important note: Apple will only provide you with the name and email ONCE which is when the user taps "Sign in with Apple" on your app the first time. Keep in mind that you have to store this in your database at this time! For every login after that, Apple will provide you with a unique ID that you can use to lookup the username in your database.
+
 ## Example
 
 **Live on https://passport-apple.ananay.dev**
