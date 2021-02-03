@@ -2,7 +2,8 @@
   "name": "passport-apple",
   "version": "1.1.2",
   "description": "Passport strategy for Sign in with Apple",
-  "main": "src/strategy.js",
+  "main": "./dist/passport-apple",
+  "types": "./src/types",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
