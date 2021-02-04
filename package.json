@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/ananay/passport-apple.git"
+    "url": "git+https://github.com/ainusdev/passport-apple.git"
   },
   "keywords": [
     "apple",
@@ -25,12 +25,12 @@
     "authentication",
     "identity"
   ],
-  "author": "Ananay Arora <i@ananayarora.com> (https://ananayarora.com)",
+  "author": "SUNG-MIN CHOI <dev@ainus.co.kr> (https://ainus.co.kr)",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/ananay/passport-apple/issues"
+    "url": "https://github.com/ainusdev/passport-apple/issues"
   },
-  "homepage": "https://github.com/ananay/passport-apple#readme",
+  "homepage": "https://github.com/ainusdev/passport-apple#readme",
   "dependencies": {
     "express": "^4.17.1",
     "jsonwebtoken": "^8.5.1",
