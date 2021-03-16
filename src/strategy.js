@@ -37,8 +37,7 @@ const OAuth2Strategy = require('passport-oauth2'),
  *  found on top right corner of the developers page
  * @param {string} options.keyID – The identifier for the private key on the Apple
  *  Developer Account page
- * @param {string} options.callbackURL – The identifier for the private key on the Apple
- *  Developer Account page
+ * @param {string} options.callbackURL – The OAuth Redirect URI
  * @param {string} options.privateKeyLocation - Location to the private key
  * @param {string} options.privateKeyString - Private key string
  * @param {boolean} options.passReqToCallback - Determine if the req will be passed to passport cb function
