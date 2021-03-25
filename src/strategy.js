@@ -93,7 +93,7 @@ function Strategy(options, verify) {
                         const refresh_token = results.refresh_token;
                         const encodedIdToken = results.id_token
                         const decodedIdToken = jwt.decode(results.id_token)
-                        callback(null, access_token, refresh_token, encodedIdToken, decodedIdToken);
+                        callback(null, access_token, refresh_token, { encodedIdToken, decodedIdToken });
                     }
                 }
             )
