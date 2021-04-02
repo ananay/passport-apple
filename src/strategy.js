@@ -8,7 +8,6 @@ const OAuth2Strategy = require('passport-oauth2'),
     AppleClientSecret = require("./token"),
     util = require('util')
     querystring = require('querystring'),
-    jwt = require('jsonwebtoken');
 
 /**
  * Passport Strategy Constructor
@@ -22,10 +21,13 @@ const OAuth2Strategy = require('passport-oauth2'),
  *      keyID: "",
  *      privateKeyLocation: "",
  *      passReqToCallback: true
- *   }, function(req, accessToken, refreshToken, decodedIdToken, __ , cb) {
- *       // Here, check if the decodedIdToken.sub exists in your database!
+ *   }, function(req, accessToken, refreshToken, idToken, __ , cb) {
+ *       // The idToken returned is encoded. You can use the jsonwebtoken library via jwt.decode(idToken)
+ *       // to access the properties of the decoded idToken properties which contains the user's
+ *       // identity information.
+ *       // Here, check if the idToken.sub exists in your database!
  *       // __ parameter is REQUIRED for the sake of passport implementation
- *       // it should be profile in the future but apple hasn't implemented passing data 
+ *       // it should be profile in the future but apple hasn't implemented passing data
  *       // in access token yet https://developer.apple.com/documentation/sign_in_with_apple/tokenresponse
  *       cb(null, idToken);
  *   }));
@@ -91,8 +93,7 @@ function Strategy(options, verify) {
                         const results = JSON.parse(data);
                         const access_token = results.access_token;
                         const refresh_token = results.refresh_token;
-                        const decodedIdToken = jwt.decode(results.id_token)
-                        callback(null, access_token, refresh_token, decodedIdToken);
+                        callback(null, access_token, refresh_token, results.id_token);
                     }
                 }
             )
