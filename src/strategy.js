@@ -135,4 +135,8 @@ Strategy.prototype.authorizationParams = function (options) {
     return options;
 }
 
-module.exports = Strategy;
+// Expose Strategy.
+exports = module.exports = Strategy;
+
+// Exports.
+exports.Strategy = Strategy;
