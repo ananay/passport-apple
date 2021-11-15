@@ -6,8 +6,7 @@
 const OAuth2Strategy = require('passport-oauth2'),
     crypto = require('crypto'),
     AppleClientSecret = require("./token"),
-    util = require('util'),
-    querystring = require('querystring');
+    util = require('util');
 
 /**
  * Passport Strategy Constructor
@@ -76,7 +75,7 @@ function Strategy(options, verify) {
             params['client_id'] = this._clientId;
             params['client_secret'] = client_secret;
 
-            const post_data = querystring.stringify(params);
+            const post_data = new URLSearchParams(params).toString();
             const post_headers = {
                 'Content-Type': 'application/x-www-form-urlencoded'
             };
