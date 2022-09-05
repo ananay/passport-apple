@@ -67,19 +67,29 @@ app.get("/login", passport.authenticate('apple'));
 Finally, add the callback route and handle the response:
 ```js
 app.post("/auth", function(req, res, next) {
-    passport.authenticate('apple', function(err, user, info) {
-        if (err) {
-            if (err == "AuthorizationError") {
-                res.send("Oops! Looks like you didn't allow the app to proceed. Please sign in again! <br /> \
-                <a href=\"/login\">Sign in with Apple</a>");
-            } else if (err == "TokenError") {
-                res.send("Oops! Couldn't get a valid token from Apple's servers! <br /> \
-                <a href=\"/login\">Sign in with Apple</a>");
-            }
-        } else {
-            res.json(user);
-        }
-    })(req, res, next);
+	passport.authenticate('apple', function(err, user, info) {
+		if (err) {
+			if (err == "AuthorizationError") {
+				res.send("Oops! Looks like you didn't allow the app to proceed. Please sign in again! <br /> \
+				<a href=\"/login\">Sign in with Apple</a>");
+			} else if (err == "TokenError") {
+				res.send("Oops! Couldn't get a valid token from Apple's servers! <br /> \
+				<a href=\"/login\">Sign in with Apple</a>");
+			} else {
+				res.send(err);
+			}
+		} else {
+			if (req.body.user) {
+      // Get the profile info (name and email) if the person is registering
+				res.json({
+					user: req.body.user,
+					idToken: user
+				});
+			} else {
+				res.json(user);
+			}			
+		}
+	})(req, res, next);
 });
 ```
 
