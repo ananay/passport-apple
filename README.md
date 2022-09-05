@@ -80,7 +80,7 @@ app.post("/auth", function(req, res, next) {
 			}
 		} else {
 			if (req.body.user) {
-      // Get the profile info (name and email) if the person is registering
+				// Get the profile info (name and email) if the person is registering
 				res.json({
 					user: req.body.user,
 					idToken: user
