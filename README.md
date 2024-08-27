@@ -13,8 +13,6 @@ Passport strategy for the new Sign in with Apple feature, now with fetching prof
 
 ## Example
 
-**Live on https://passport-apple.ananay.dev**
-
 **Example repo: https://github.com/ananay/passport-apple-example**
 
 ## Installation
@@ -39,59 +37,94 @@ https://github.com/ananay/apple-auth/blob/master/SETUP.md
 Initialize the strategy as follows:
 
 ```js
-const AppleStrategy = require('passport-apple');
+import AppleStrategy from 'passport-apple';
+import jsonwebtoken from 'jsonwebtoken';
+import assert from 'node:assert';
+
 passport.use(new AppleStrategy({
-    clientID: "",
-    teamID: "",
-    callbackURL: "",
-    keyID: "",
-    privateKeyLocation: "",
-    passReqToCallback: true
-}, function(req, accessToken, refreshToken, idToken, profile, cb) {
-    // The idToken returned is encoded. You can use the jsonwebtoken library via jwt.decode(idToken)
-    // to access the properties of the decoded idToken properties which contains the user's
-    // identity information.
-    // Here, check if the idToken.sub exists in your database!
-    // idToken should contains email too if user authorized it but will not contain the name
-    // `profile` parameter is REQUIRED for the sake of passport implementation
-    // it should be profile in the future but apple hasn't implemented passing data
-    // in access token yet https://developer.apple.com/documentation/sign_in_with_apple/tokenresponse
-    cb(null, idToken);
+  clientID: '',
+  teamID: '',
+  callbackURL: 'https://redirectmeto.com/http://localhost:8080/auth/apple/callback', // redirectmeto.com is useful for local testing
+  keyID: '',
+  privateKeyString: '',
+  passReqToCallback: true,
+}, async (req, accessToken, refreshToken, idToken, profile, cb) => {
+  try {
+    const decodedToken = jsonwebtoken.decode(idToken, { json: true });
+    assert(decodedToken != null);
+
+    // ONLY on the first auth each user makes, `req.query.user` gets set - after that it will no longer be sent in subsequent logins.
+    // In that case `req.query.user` is a JSON encoded string, which has the properties `firstName` and `lastName`.
+    // Note: If you need to test first auth again, you can remove the app from "Sign in with Apple" here: https://appleid.apple.com/account/manage
+    const firstTimeUser = typeof req.query['user'] === 'string' ? JSON.parse(req.query['user']) : undefined;
+
+    // JWT token should contain email if authenticated
+    const { sub, email, email_verified } = decodedToken;
+
+    // TODO implement your own function check for whether `sub` exists in your database (or create a new user if it does not)
+    const dbUser = await upsertUser({ sub, email, email_verified, firstTimeUser });
+
+    return cb(null, { id: dbUser.id });
+  } catch (err) {
+    return cb(err);
+  }
 }));
 ```
+
 Add the login route:
+
 ```js
-app.get("/login", passport.authenticate('apple'));
+// This is the initial request that gets the whole process started (and redirects to Apple's server)
+app.get('/apple', passport.authenticate('apple'));
 ```
 
 Finally, add the callback route and handle the response:
+
 ```js
-app.post("/auth", function(req, res, next) {
-	passport.authenticate('apple', function(err, user, info) {
-		if (err) {
-			if (err == "AuthorizationError") {
-				res.send("Oops! Looks like you didn't allow the app to proceed. Please sign in again! <br /> \
-				<a href=\"/login\">Sign in with Apple</a>");
-			} else if (err == "TokenError") {
-				res.send("Oops! Couldn't get a valid token from Apple's servers! <br /> \
-				<a href=\"/login\">Sign in with Apple</a>");
-			} else {
-				res.send(err);
-			}
-		} else {
-			if (req.body.user) {
-				// Get the profile info (name and email) if the person is registering
-				res.json({
-					user: req.body.user,
-					idToken: user
-				});
-			} else {
-				res.json(user);
-			}			
-		}
-	})(req, res, next);
+// Apple is different in that they POST back to the callback.
+// Because of SameSite policies in browsers don't allow cookies to be included in external POST requests
+// we wouldn't be able to access our express session here, and thereby not authenticate the session.
+// Therefore we redirect the POST request to GET (with query parameters).
+// https://github.com/ananay/passport-apple/issues/51#issuecomment-2312651378
+app.post('/apple/callback', express.urlencoded({ extended: true }), (req, res) => {
+  const { body } = req;
+  const sp = new URLSearchParams();
+  Object.entries(body).forEach(([key, value]) => sp.set(key, String(value)));
+  res.redirect(`/v1/auth/apple/callback?${sp.toString()}`);
+});
+
+const failureRedirect = '/failure';
+
+// Here we handle the GET request after the redirect from the POST callback above
+app.get('/apple/callback', passport.authenticate('apple', {
+  successReturnToOrRedirect: '/success',
+  failureRedirect,
+}), (err, _req, res, _next) => {
+  // for some reason, `failureRedirect` doesn't receive certain errors, so we need an error handler here.
+  if (err instanceof Error && (err.name === 'AuthorizationError' || err.name === 'TokenError')) {
+    // Common errors:
+    // - AuthorizationError { code: 'user_cancelled_authorize' } - When the user cancels the operation
+    // - TokenError { code: 'invalid_grant' } - The code has already been used
+    const sp = new URLSearchParams({ error: err.name });
+    if ('code' in err && typeof err.code === 'string') sp.set('code', err.code);
+    res.redirect(`${failureRedirect}${sp.toString()}`);
+    return;
+  }
+
+  // unknown err object
+  res.redirect(failureRedirect);
 });
 ```
+
+## Testing locally
+
+Even though Apple requires HTTPS on your redirect URL, you can work around this by using a service like redirectmeto.com. For example if your local dev server is running on port 8080, add this redirect URL in your Apple developer console:
+
+```
+https://redirectmeto.com/http://localhost:8080/auth/apple/callback
+```
+
+Note: Remember to remove it again after you're done testing, as it could be a security issue if running with it in production.
 
 ## Other Sign in with Apple repos
 
